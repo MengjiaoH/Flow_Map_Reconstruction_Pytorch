@@ -103,6 +103,42 @@ class LoadPointsData2(Dataset):
         # print(torch.min(end), torch.max(end))
         return start, end, t
 
+class LoadPointsDataTest2(Dataset): 
+    def __init__(self, seeds, interval, num_fm, dim, boundings, t_start, t_end, step_size):
+        minval = -1
+        maxval = 1
+        self.data = []
+        # [None] * seeds.shape[0] * num_fm
+        
+
+        seeds[:, 0] = (seeds[:, 0] - boundings[0]) / (boundings[1] - boundings[0]) * (maxval - minval) +  minval
+        seeds[:, 1] = (seeds[:, 1] - boundings[2]) / (boundings[3] - boundings[2]) * (maxval - minval) +  minval
+        if dim == 3:
+            seeds[:, 2] = (seeds[:, 2] - boundings[4]) / (boundings[5] - boundings[4]) * (maxval - minval) +  minval
+        for j in range(seeds.shape[0]):
+            if dim == 2:
+                seed = seeds[j, 0:2]
+            elif dim == 3:
+                seed = seeds[j, 0:3]
+            for i in range(1, num_fm+1):
+                t = (i * interval * step_size - t_start) / (t_end - t_start) * (maxval - minval) +  minval ## start time   
+                self.data.append({
+                        "start": torch.FloatTensor(seed),
+                        "time": torch.FloatTensor([t])
+                        })
+    def __len__(self):
+        # print("total data size", len(self.data))
+        return len(self.data)
+    
+    def __getitem__(self,index):
+        # np.random.seed(seed = int(time.time() + index))
+        data = self.data[index]
+        start = data["start"]
+        t = data["time"]
+        # print(torch.min(end), torch.max(end))
+        return start, t
+
+
 class LoadPointsData2_WO_Outliers(Dataset):
     def __init__(self, data_dir, interval, dim, t_start, t_end, start_fm, stop_fm, step_size, mode, bbox):
         self.data_dir = data_dir
