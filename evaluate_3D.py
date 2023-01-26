@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     model_dirs = ["./models//hurricane/model.pth"]  ## TODO: the model directory
     ## calcualate ground truth 
-    gt = np.load("./datasets/hurricane/long/fm_0_20/1000.npy") ## the ground truth directory
+    gt = np.load("./datasets/hurricane/long/fm_0_20/1000.npy") ## TODO: the ground truth directory
 
     boundings = [np.loadtxt("./boundings_long_1.txt")] 
 
