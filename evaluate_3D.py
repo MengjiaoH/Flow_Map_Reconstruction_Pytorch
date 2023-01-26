@@ -32,11 +32,11 @@ if __name__ == "__main__":
     maxval = 1
     save_prefix = "./results/"
 
-    model_dirs = ["./models//hurricane/model.pth"]
+    model_dirs = ["./models//hurricane/model.pth"]  ## TODO: the model directory
     ## calcualate ground truth 
-    gt = np.load("./datasets/hurricane/long/fm_0_20/1000.npy")
+    gt = np.load("./datasets/hurricane/long/fm_0_20/1000.npy") ## the ground truth directory
 
-    boundings = [np.loadtxt("./models/hurricane/boundings_long_1.txt")]
+    boundings = [np.loadtxt("./boundings_long_1.txt")] 
 
     offset = 0.01
     lower = [249, 150, 0]
@@ -63,15 +63,16 @@ if __name__ == "__main__":
     model_list = []
     print("start loading")
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    # device = torch.device("cuda:0")
+
     for i, model_dir in enumerate(model_dirs):
-        model = Network2(dim, 3, 6, 1024)
-        if device == torch.device("cpu"):
-            model.load_state_dict(torch.load(model_dir, map_location=device))
-        else:
-            if torch.cuda.device_count() > 1:
-                model = torch.nn.DataParallel(model)
-            model.load_state_dict(torch.load(model_dir))
+        # model = Network2(dim, 3, 6, 1024)
+        # if device == torch.device("cpu"):
+        #     model.load_state_dict(torch.load(model_dir, map_location=device))
+        # else:
+        #     if torch.cuda.device_count() > 1:
+        #         model = torch.nn.DataParallel(model)
+            # model.load_state_dict(torch.load(model_dir))
+        model = torch.load(model_dir)
         model.to(device)
         print("Model Loaded!", i)
         model_list.append(model)
@@ -168,16 +169,9 @@ if __name__ == "__main__":
     e = 21
     ax = fig.add_subplot(1, 1, 1, projection='3d')
     ax.set_box_aspect([1.5, 1.5, 1])
-    # ax.set_box_aspect([1, 1.78, 1])
-    # ax.set_xlim((0, 100))
-    # ax.set_ylim((0, 178))
-    # ax.set_zlim((0, 100))
     for n in range(seeds.shape[0]):
         seed = seeds[n, :]
         if n % 10 == 0:
-        # if error[n] < 5:
-        # if seed[0] > 43 and seed[0] < 65 and seed[1] < 8 and seed[2] > 37 and seed[2] < 59 and error[n] > 3:
-            # print(seed, results[0:61,n, :])
             ax.plot3D(results[s:e, n, 0], results[s:e, n, 1], results[s:e, n, 2], color='tab:blue', linewidth=3)
             ax.plot3D(gt[s:e, n, 0], gt[s:e, n, 1], gt[s:e, n, 2], color='tab:red', linewidth=2)
    

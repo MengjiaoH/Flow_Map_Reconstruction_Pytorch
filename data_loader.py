@@ -11,81 +11,12 @@ class LoadPointsData2(Dataset):
         self.data_dir = data_dir
         self.dim = dim
         print(self.data_dir)
-        # data = []
-        # num_fm = stop_fm - start_fm
-        # for n in range(num_fm+1):
-            # d_dir = self.data_dir + "fm_" + str(n) + ".raw"
-            # temp = np.fromfile(d_dir, dtype=np.float32)
-            # num_seeds = int(temp.shape[0] / dim)
-            # temp = np.reshape(temp, (num_seeds, dim))
-            # data.append(temp)
-        # data = np.array(data)
         data = np.load(self.data_dir)
-        # #data = np.fromfile(self.data_dir, dtype=np.float32)
+
         print("data shape", data.shape)
-        # x_min = np.min(data[:, :, 0])
-        # x_max = np.max(data[:, :, 0])
-        # y_min = np.min(data[:, :, 1])
-        # y_max = np.max(data[:, :, 1])
-        # z_min = -1
-        # z_max = -1
-        # if dim == 3:
-            # z_min = np.min(data[:, :, 2])
-            # z_max = np.max(data[:, :, 2])
-        # ## scale to [-1, 1]
-        # minval = -1
-        # maxval = 1
-        # data[:, :, 0] = ((data[:, :, 0] - x_min) * (maxval - minval)) / (x_max - x_min) + minval
-        # data[:, :, 1] = ((data[:, :, 1] - y_min) * (maxval - minval)) / (y_max - y_min) + minval
-        # if dim == 3:
-            # data[:, :, 2] = ((data[:, :, 2] - z_min) * (maxval - minval)) / (z_max - z_min) + minval
-        # boundings = np.array([x_min, x_max, y_min, y_max, z_min, z_max])
-        # np.savetxt("boundings.txt", boundings)
-        # print("bounding saved")
-        # # B = 1 * np.random.normal(size=(dim+1, 1)) 
-        # #B_fc = 1 * np.random.normal(size=(batch_size, 1))
-        # #start = np.concatenate([np.sin(start @ B_pos), np.cos(start @ B_pos)], axis=-1)
-        # print(data.shape[1], start_fm, stop_fm)
-        # for j in range(data.shape[1]):
-            # trajectories = data[:, j, 0:dim]
-            # seed = trajectories[0, :]
-            # for i in range(start_fm+1, stop_fm + 1):
-                # if mode == 'short':
-                    # end = trajectories[i - start_fm, :]
-                # if mode == 'long':
-                    # end = trajectories[i, :]
-                # t = (((i-start_fm-1) * interval * step_size - t_start) * (maxval - minval)) / (t_end - t_start) +  minval ## start time       
-                # # t = (i-1) * interval * 0.01 ## start time       
-                # #in_domain = True
-                # # if dim == 2:
-                    # # if end[0] >= bbox[0] and end[0] <= bbox[1] and end[1] >= bbox[2] and end[1] <= bbox[3]:
-        # #        self.data.append({
-        # #            "start": torch.FloatTensor(seed),
-        # #            "end": torch.FloatTensor(end),
-        # #            "time": torch.FloatTensor([t])
-        # #        })
-                    # #else:
-                        # #break
-                # # if dim == 3:
-                    # # if end[0] >= bbox[0] and end[0] <= bbox[1] and end[1] >= bbox[2] and end[1] <= bbox[3] and end[2] >= bbox[4] and end[2] <= bbox[5]:
-                        # # self.data.append({
-                            # # "start": torch.FloatTensor(seed),
-                            # # "end": torch.FloatTensor(end),
-                            # # "time": torch.FloatTensor([t])
-                        # # })
-                    # #else:
-                    # #    break
         num_samples = data.shape[0]
         self.length = data.shape[1]
         self.data = data
-        # for d in range(data.shape[0]):
-            # self.data.append({
-                # "start": torch.FloatTensor(data[d, 0:dim]),
-                # "end": torch.FloatTensor(data[d, dim:dim+dim]),
-                # "time": torch.FloatTensor([data[d, length-1]])
-            # })
-
-        # print(sys.getsizeof(self.data))
 
     def __len__(self):
         print("total data size", len(self.data))
@@ -97,10 +28,7 @@ class LoadPointsData2(Dataset):
         start = torch.FloatTensor(data[0:self.dim])
         end = torch.FloatTensor(data[self.dim : self.dim+ self.dim])
         t = torch.FloatTensor([data[self.length-1]])
-        #start = data["start"]
-        #end = data["end"]
-        #t = data["time"]
-        # print(torch.min(end), torch.max(end))
+
         return start, end, t
 
 class LoadPointsDataTest2(Dataset): 
