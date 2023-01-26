@@ -32,26 +32,31 @@ class LoadPointsData2(Dataset):
         return start, end, t
 
 class LoadPointsDataTest2(Dataset): 
-    def __init__(self, seeds, interval, num_fm, dim, boundings, t_start, t_end, step_size):
+    def __init__(self, gt, interval, num_fm, dim, boundings, t_start, t_end, step_size):
         minval = -1
         maxval = 1
         self.data = []
-        # [None] * seeds.shape[0] * num_fm
-        
 
-        seeds[:, 0] = (seeds[:, 0] - boundings[0]) / (boundings[1] - boundings[0]) * (maxval - minval) +  minval
-        seeds[:, 1] = (seeds[:, 1] - boundings[2]) / (boundings[3] - boundings[2]) * (maxval - minval) +  minval
+        gt[:, 0] = (gt[:, 0] - boundings[0]) / (boundings[1] - boundings[0]) * (maxval - minval) +  minval
+        gt[:, 1] = (gt[:, 1] - boundings[2]) / (boundings[3] - boundings[2]) * (maxval - minval) +  minval
+        
+        seeds = gt[0, :, :]
+
         if dim == 3:
-            seeds[:, 2] = (seeds[:, 2] - boundings[4]) / (boundings[5] - boundings[4]) * (maxval - minval) +  minval
+            gt[:, 2] = (gt[:, 2] - boundings[4]) / (boundings[5] - boundings[4]) * (maxval - minval) +  minval
+        
         for j in range(seeds.shape[0]):
+            traj = gt[:, j, :]
             if dim == 2:
                 seed = seeds[j, 0:2]
             elif dim == 3:
                 seed = seeds[j, 0:3]
             for i in range(1, num_fm+1):
                 t = (i * interval * step_size - t_start) / (t_end - t_start) * (maxval - minval) +  minval ## start time   
+                end = traj[i, :]
                 self.data.append({
                         "start": torch.FloatTensor(seed),
+                        "end" :torch.FloatTensor(end),
                         "time": torch.FloatTensor([t])
                         })
     def __len__(self):
@@ -62,9 +67,10 @@ class LoadPointsDataTest2(Dataset):
         # np.random.seed(seed = int(time.time() + index))
         data = self.data[index]
         start = data["start"]
+        end = data["end"]
         t = data["time"]
         # print(torch.min(end), torch.max(end))
-        return start, t
+        return start, end, t
 
 
 class LoadPointsData2_WO_Outliers(Dataset):
