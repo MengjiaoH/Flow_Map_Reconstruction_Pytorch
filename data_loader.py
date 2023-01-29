@@ -72,7 +72,7 @@ class LoadPointsDataTest2(Dataset):
         # print(torch.min(end), torch.max(end))
         return start, end, t
 
-class LoadPointsDataTest(Dataset): 
+class LoadPointsDataTest(Dataset): ## input seeds
     def __init__(self, seeds, interval, num_fm, dim, boundings, t_start, t_end, step_size):
         minval = -1
         maxval = 1
