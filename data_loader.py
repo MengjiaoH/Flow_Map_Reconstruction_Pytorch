@@ -37,13 +37,13 @@ class LoadPointsDataTest2(Dataset):
         maxval = 1
         self.data = []
 
-        gt[:, 0] = (gt[:, 0] - boundings[0]) / (boundings[1] - boundings[0]) * (maxval - minval) +  minval
-        gt[:, 1] = (gt[:, 1] - boundings[2]) / (boundings[3] - boundings[2]) * (maxval - minval) +  minval
+        gt[:, :, 0] = (gt[:, :, 0] - boundings[0]) / (boundings[1] - boundings[0]) * (maxval - minval) +  minval
+        gt[:, :, 1] = (gt[:, :, 1] - boundings[2]) / (boundings[3] - boundings[2]) * (maxval - minval) +  minval
         
         seeds = gt[0, :, :]
 
         if dim == 3:
-            gt[:, 2] = (gt[:, 2] - boundings[4]) / (boundings[5] - boundings[4]) * (maxval - minval) +  minval
+            gt[:, :, 2] = (gt[:, :, 2] - boundings[4]) / (boundings[5] - boundings[4]) * (maxval - minval) +  minval
         
         for j in range(seeds.shape[0]):
             traj = gt[:, j, :]
